@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
@@ -7,6 +7,7 @@ function App() {
   const [diaryEntry, setDiaryEntry] = useState('');
   const [query, setQuery] = useState('');
   const [assistantResponse, setAssistantResponse] = useState('');
+  const [error, setError] = useState(null);
 
   const handleHover = () => setSidebarOpen(true);
   const handleLeave = () => setSidebarOpen(false);
@@ -16,16 +17,16 @@ function App() {
       const response = await fetch('http://localhost:5000/save_diary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ entry: diaryEntry }),
+        body: JSON.stringify({ entry: diaryEntry.trim() }),
       });
       if (response.ok) {
         alert('Diary entry saved!');
         setDiaryEntry('');
       } else {
-        alert('Failed to save the diary entry.');
+        setError('Failed to save the diary entry.');
       }
     } catch (error) {
-      console.error('Error saving diary entry:', error);
+      setError('Error saving diary entry: ' + error.message);
     }
   };
 
@@ -34,37 +35,44 @@ function App() {
       const response = await fetch('http://localhost:5000/analyze_diary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query: query.trim() }),
       });
       const data = await response.json();
       setAssistantResponse(data.answer || 'No response received.');
     } catch (error) {
-      console.error('Error querying the assistant:', error);
+      setError('Error querying the assistant: ' + error.message);
       setAssistantResponse('Failed to get a response. Please try again later.');
     }
   };
 
+  useEffect(() => {
+    if (error) {
+      alert(error);
+      setError(null);
+    }
+  }, [error]);
+
   return (
     <div className="app">
       <header className="header">
-        <h1>LifeCapsule</h1>
+        <h1 className="header-title">LifeCapsule</h1>
       </header>
       <div
         className={`sidebar ${sidebarOpen ? 'open' : ''}`}
         onMouseEnter={handleHover}
         onMouseLeave={handleLeave}
       >
-        <ul>
+        <ul className="menu-list">
           <li
             onClick={() => setActivePage('diary')}
-            className={activePage === 'diary' ? 'active' : ''}
+            className={`menu-item ${activePage === 'diary' ? 'active' : ''}`}
           >
             <span className={`icon ${sidebarOpen ? '' : 'collapsed'}`}>📖</span>
             {sidebarOpen && <span className="menu-text">Diary Entry</span>}
           </li>
           <li
             onClick={() => setActivePage('assistant')}
-            className={activePage === 'assistant' ? 'active' : ''}
+            className={`menu-item ${activePage === 'assistant' ? 'active' : ''}`}
           >
             <span className={`icon ${sidebarOpen ? '' : 'collapsed'}`}>🤖</span>
             {sidebarOpen && <span className="menu-text">Personal Assistant</span>}
@@ -81,7 +89,11 @@ function App() {
               onChange={(e) => setDiaryEntry(e.target.value)}
               className="diary-input"
             />
-            <button onClick={submitDiaryEntry} className="submit-button">
+            <button
+              onClick={submitDiaryEntry}
+              className="submit-button"
+              disabled={!diaryEntry.trim()}
+            >
               Save Entry
             </button>
           </div>
@@ -95,10 +107,14 @@ function App() {
               onChange={(e) => setQuery(e.target.value)}
               className="query-input"
             />
-            <button onClick={askAssistant} className="ask-button">
+            <button
+              onClick={askAssistant}
+              className="ask-button"
+              disabled={!query.trim()}
+            >
               Submit Query
             </button>
-            <div className="response-box">{assistantResponse}</div>
+            <div className="response-box animated-box">{assistantResponse}</div>
           </div>
         )}
       </div>
