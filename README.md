@@ -1,2 +1,2 @@
 # LifeCapsule
-LifeCapsule is an app that allows users to document daily events and easily query past memories using natural language. It combines a React frontend, Flask backend, and LangChain with a local LLM (e.g., Llama 3.2) for efficient querying and memory management, offering personalized insights into life experiences.
+LifeCapsule is an AI-powered, privacy-focused diary enabling users to retrieve memories through natural language queries, integrating Llama 3.2:3B, LangChain, and ChromaDB for offline semantic search and contextual understanding.

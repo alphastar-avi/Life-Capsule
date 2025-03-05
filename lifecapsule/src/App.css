@@ -1,9 +1,9 @@
 :root {
   --red-crayola: #ed254eff;
-  --naples-yellow: #f9dc5cff;
+  --naples-yellow: rgb(0, 0, 0);
   --mint-cream: #f4fffdff;
-  --oxford-blue: #011936ff;
-  --charcoal: #465362ff;
+  --oxford-blue: rgb(155, 195, 243);
+  --charcoal: rgba(252, 252, 252, 0.857);
   --dark-gray: #333;
   --light-gray: #ccc;
 }

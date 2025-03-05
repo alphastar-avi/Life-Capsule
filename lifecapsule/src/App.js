@@ -55,7 +55,7 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1 className="header-title">LifeCapsule</h1>
+        <h1 className="header-title">Life Capsule</h1>
       </header>
       <div
         className={`sidebar ${sidebarOpen ? 'open' : ''}`}
